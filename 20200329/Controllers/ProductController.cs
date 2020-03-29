@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
 using _20200329.Models;
+using Newtonsoft.Json;
 
 namespace _20200329.Controllers
 {
@@ -12,13 +14,15 @@ namespace _20200329.Controllers
     {
         static readonly IProductRepository repository = new ProductRepository();
 
-        public IEnumerable<Product> GetProductAll()
+        public string GetProductAll()
         {
-            return repository.GetAll();
+            List<Product> list = repository.GetAll().ToList();
+            return JsonConvert.SerializeObject(list);
         }
 
         public Product GetProduct(int id)
         {
+            Debug.WriteLine(id);
             Product item = repository.Get(id);
 
             if (item.Equals(null))
@@ -30,7 +34,7 @@ namespace _20200329.Controllers
         }
 
         public IEnumerable<Product> GetProductsByCategory(String category)
-        {
+        {            
             return repository.GetAll().Where(p => String.Equals(p.Category, category, StringComparison.OrdinalIgnoreCase));
         }
 
